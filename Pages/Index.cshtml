@@ -1,0 +1,126 @@
+﻿@page
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <div class="row">
+        <div class="col-md-6">
+            <div class="text-center">
+                <form method="post">
+                    <div style="padding: 10px">
+                        <label asp-for="Input.ActionType" value="Block" class="form-label">
+                            <input asp-for="Input.ActionType" class="btn btn-outline-danger" id="Block" type="submit" value="Block"/>
+                        </label>
+                        <label asp-for="Input.ActionType" value="Unblock" class="form-label">
+                            <input asp-for="Input.ActionType" class="btn btn-success" id="Unblock" type="submit" value="Unblock"/>
+                        </label>
+                        <label asp-for="Input.ActionType" value="Delete" class="form-label">
+                            <input asp-for="Input.ActionType" class="btn btn-danger" id="Delete" type="submit" value="Delete"/>
+                        </label>
+                    </div>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>
+                                <script language="JavaScript">
+                                    function toggle(source) {
+                                        var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+                                        for (var i = 0; i < checkboxes.length; i++) {
+                                            if (checkboxes[i] != source)
+                                                checkboxes[i].checked = source.checked;
+                                        }
+                                    }
+                                </script>
+                                <div class="checkbox mb-3">
+                                    <label class="form-label">
+                                        <input type="checkbox" name="select-all" id="select-all" class="form-check-input" onclick="toggle(this)"/>
+                                    </label>
+                                </div>
+                            </th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Last Login</th>
+                            <th>Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @for (var i = 0; i < Model.Users.Length; i++)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="checkbox mb-3">
+                                        <label asp-for="Input.Checkboxes[i]" class="form-label">
+                                            <input asp-for="Input.Checkboxes[i]" type="checkbox" class="form-check-input"/>
+                                        </label>
+                                    </div>
+                                </td>
+                                <td>@Model.Users[i].UserName</td>
+                                <td>@Model.Users[i].Email</td>
+                                <td>@Model.Users[i].LastOnline</td>
+                                @if (Model.Users[i].Status)
+                                {
+                                    <td>Active</td>
+                                }
+                                else
+                                {
+                                    <td>Blocked</td>
+                                }
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div style="text-align: center">
+        <h1 class="display-4">Welcome</h1>
+        <p>I don't really know what to put here for an unauthorized user, so here's a picture of a cat:</p>
+        <div class="cat-pic">
+            <img src="https://pbs.twimg.com/media/EQr2eynXYAcb23X.jpg" alt="A Cat"/>
+            <p>Jk it's an owl</p>
+        </div>
+    </div>
+}
+
+<style>
+    img {
+        width: 400px;
+        height: auto;
+    }
+
+    .cat-pic {
+        opacity: 0;
+    }
+
+    .cat-pic:hover {
+        opacity: 1;
+    }
+
+    table, th, td {
+        border: 2px solid black;
+        padding: 7px;
+    }
+    
+    tr:nth-child(even) {
+        background-color: lightgrey;
+    }
+    
+    svg {
+        width: 16px;
+        height: 16px;
+        fill: currentColor;
+    }
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial"/>
+}
